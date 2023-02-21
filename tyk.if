@@ -1,0 +1,160 @@
+## <summary>policy for tyk</summary>
+
+########################################
+## <summary>
+##      Execute tyk_exec_t in the tyk domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##      Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`tyk_domtrans',`
+        gen_require(`
+                type tyk_t, tyk_exec_t;
+        ')
+
+        corecmd_search_bin($1)
+        domtrans_pattern($1, tyk_exec_t, tyk_t)
+')
+
+######################################
+## <summary>
+##      Execute tyk in the caller domain.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`tyk_exec',`
+        gen_require(`
+                type tyk_exec_t;
+        ')
+
+        corecmd_search_bin($1)
+        can_exec($1, tyk_exec_t)
+')
+########################################
+## <summary>
+##      Read tyk's log files.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+## <rolecap/>
+#
+interface(`tyk_read_log',`
+        gen_require(`
+                type tyk_log_t;
+        ')
+
+        logging_search_logs($1)
+        read_files_pattern($1, tyk_log_t, tyk_log_t)
+')
+########################################
+## <summary>
+##      Append to tyk log files.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`tyk_append_log',`
+        gen_require(`
+                type tyk_log_t;
+        ')
+
+        logging_search_logs($1)
+        append_files_pattern($1, tyk_log_t, tyk_log_t)
+')
+
+########################################
+## <summary>
+##      Manage tyk log files
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`tyk_manage_log',`
+        gen_require(`
+                type tyk_log_t;
+        ')
+
+        logging_search_logs($1)
+        manage_dirs_pattern($1, tyk_log_t, tyk_log_t)
+        manage_files_pattern($1, tyk_log_t, tyk_log_t)
+        manage_lnk_files_pattern($1, tyk_log_t, tyk_log_t)
+')
+########################################
+## <summary>
+##      Read tyk PID files.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`tyk_read_pid_files',`
+        gen_require(`
+                type tyk_var_run_t;
+        ')
+
+        files_search_pids($1)
+        read_files_pattern($1, tyk_var_run_t, tyk_var_run_t)
+')
+
+
+########################################
+## <summary>
+##      All of the rules required to administrate
+##      an tyk environment
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+## <param name="role">
+##      <summary>
+##      Role allowed access.
+##      </summary>
+## </param>
+## <rolecap/>
+#
+interface(`tyk_admin',`
+        gen_require(`
+                type tyk_t;
+                type tyk_log_t;
+                type tyk_var_run_t;
+                type tyk_conf_t;
+        ')
+
+        allow $1 tyk_t:process { signal_perms };
+        ps_process_pattern($1, tyk_t)
+
+    tunable_policy(`deny_ptrace',`',`
+        allow $1 tyk_t:process ptrace;
+    ')
+
+        logging_search_logs($1)
+        admin_pattern($1, tyk_log_t)
+
+        files_search_pids($1)
+        admin_pattern($1, tyk_var_run_t)
+        admin_pattern($1, tyk_conf_t)
+        optional_policy(`
+                systemd_passwd_agent_exec($1)
+                systemd_read_fifo_file_passwd_run($1)
+        ')
+')

@@ -1,0 +1,69 @@
+policy_module(tyk, 1.0.0)
+
+
+require {
+        class capability net_bind_service;
+        class tcp_socket { accept listen };
+}
+
+########################################
+#
+# Declarations
+#
+
+type tyk_t;
+type tyk_exec_t;
+init_daemon_domain(tyk_t, tyk_exec_t)
+
+permissive tyk_t;
+
+type tyk_log_t;
+logging_log_file(tyk_log_t)
+
+type tyk_var_run_t;
+files_pid_file(tyk_var_run_t)
+
+########################################
+#
+# tyk local policy
+#
+allow tyk_t self:capability { setgid setuid };
+allow tyk_t self:fifo_file rw_fifo_file_perms;
+allow tyk_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(tyk_t, tyk_log_t, tyk_log_t)
+manage_files_pattern(tyk_t, tyk_log_t, tyk_log_t)
+manage_lnk_files_pattern(tyk_t, tyk_log_t, tyk_log_t)
+logging_log_filetrans(tyk_t, tyk_log_t, { dir file lnk_file })
+
+manage_dirs_pattern(tyk_t, tyk_var_run_t, tyk_var_run_t)
+manage_files_pattern(tyk_t, tyk_var_run_t, tyk_var_run_t)
+manage_lnk_files_pattern(tyk_t, tyk_var_run_t, tyk_var_run_t)
+files_pid_filetrans(tyk_t, tyk_var_run_t, { dir file lnk_file })
+
+domain_use_interactive_fds(tyk_t)
+
+type tyk_conf_t;
+read_files_pattern(tyk_t, tyk_conf_t, tyk_conf_t)
+
+auth_use_nsswitch(tyk_t)
+
+miscfiles_read_localization(tyk_t)
+
+sysnet_dns_name_resolve(tyk_t)
+
+
+
+#============= tyk_t ==============
+allow tyk_t self:capability net_bind_service;
+
+#!!!! This avc can be allowed using the boolean 'nis_enabled'
+allow tyk_t self:tcp_socket { accept listen };
+corenet_tcp_bind_http_port(tyk_t)
+dev_read_sysfs(tyk_t)
+files_manage_generic_tmp_dirs(tyk_t)
+init_nnp_daemon_domain(tyk_t)
+kernel_read_net_sysctls(tyk_t)
+kernel_search_network_sysctl(tyk_t)
+userdom_manage_user_home_content_dirs(tyk_t)
+userdom_manage_user_home_content_files(tyk_t)
