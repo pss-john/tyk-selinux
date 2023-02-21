@@ -7,6 +7,8 @@ Trouble shooting:
 
 install `policycoreutils-devel`, `setools` and `setroubleshoot`
 
+usr home for tyk is `/opt/tyk-gateway`
+
 commands: 
 - `sealert -l "*"` view alerts
 - `ausearch -m AVC -ts recent | audit2allow -R` suggested additions
