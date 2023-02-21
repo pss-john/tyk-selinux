@@ -137,7 +137,6 @@ interface(`tyk_admin',`
                 type tyk_t;
                 type tyk_log_t;
                 type tyk_var_run_t;
-                type tyk_conf_t;
         ')
 
         allow $1 tyk_t:process { signal_perms };
@@ -152,7 +151,6 @@ interface(`tyk_admin',`
 
         files_search_pids($1)
         admin_pattern($1, tyk_var_run_t)
-        admin_pattern($1, tyk_conf_t)
         optional_policy(`
                 systemd_passwd_agent_exec($1)
                 systemd_read_fifo_file_passwd_run($1)
