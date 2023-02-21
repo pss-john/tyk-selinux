@@ -52,13 +52,6 @@ sepolicy manpage -p . -d tyk_t
 if [ -d "/var/log/tyk" ]; then
         /sbin/restorecon -F -R -v /var/log/tyk
 fi
-if [ -f "/etc/default/tyk-gateway" ]; then
-        /sbin/restorecon -F -R -v /etc/default/tyk-gateway
-fi
-
-if [ -f "/etc/sysconfig/tyk-gateway" ]; then
-        /sbin/restorecon -F -R -v /etc/sysconfig/tyk-gateway
-fi
 
 
 # Generate a rpm package for the newly generated policy
