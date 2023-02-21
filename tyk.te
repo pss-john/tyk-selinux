@@ -43,8 +43,7 @@ files_pid_filetrans(tyk_t, tyk_var_run_t, { dir file lnk_file })
 
 domain_use_interactive_fds(tyk_t)
 
-type tyk_conf_t;
-read_files_pattern(tyk_t, tyk_conf_t, tyk_conf_t)
+
 
 auth_use_nsswitch(tyk_t)
 
