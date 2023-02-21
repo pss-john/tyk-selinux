@@ -1,7 +1,7 @@
 # tyk-selinux
 Example Tyk SELinux with a hardened service file, currently for port 80
 
-run `'/tyk.sh` you may need to set `setenforce 0` 
+run `/tyk.sh` you may need to set `setenforce 0` 
 
 Trouble shooting:
 
