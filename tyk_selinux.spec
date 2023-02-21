@@ -5,8 +5,6 @@
 restorecon -R /opt/tyk-gateway/tyk; \
 restorecon -R /var/run/tyk; \
 if [ -d "/var/log/tyk" ] then restorecon -R /var/log/tyk; fi \
-if [ -f "/etc/default/tyk-gateway" ] then restorecon -R /etc/default/tyk-gateway; fi\
-if [ -f "/etc/sysconfig/tyk-gateway" ] then restorecon -R /etc/sysconfig/tyk-gateway; fi\
 
 %define selinux_policyver 34.1.43-1
 
