@@ -4,5 +4,4 @@
 
 /var/run/tyk(/.*)?              gen_context(system_u:object_r:tyk_var_run_t,s0)
 
-/etc/(sysconfig|default)/tyk-gateway -- gen_context(system_u:object_r:tyk_conf_t,s0)
 
